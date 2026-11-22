@@ -1,0 +1,50 @@
+package:
+  name: tidy-bench
+  dependencies:
+    - tidy
+    - prelude
+    - effect
+    - either
+    - maybe
+    - strings
+    - arrays
+    - foldable-traversable
+
+workspace:
+  packageSet:
+    registry: 77.7.0
+  extraPackages:
+    tidy:
+      path: ..
+    arrays:
+      path: ../../gopurs/gopurs-arrays
+    strings:
+      path: ../../gopurs/gopurs-strings
+    foldable-traversable:
+      path: ../../gopurs/gopurs-foldable-traversable
+    ordered-collections:
+      path: ../../gopurs/gopurs-ordered-collections
+    partial:
+      path: ../../gopurs/gopurs-partial
+    prelude:
+      path: ../../gopurs/gopurs-prelude
+    effect:
+      path: ../../gopurs/gopurs-effect
+    functions:
+      path: ../../gopurs/gopurs-functions
+    integers:
+      path: ../../gopurs/gopurs-integers
+    numbers:
+      path: ../../gopurs/gopurs-numbers
+    unsafe-coerce:
+      path: ../../gopurs/gopurs-unsafe-coerce
+    refs:
+      path: ../../gopurs/gopurs-refs
+    st:
+      path: ../../gopurs/gopurs-st
+    enums:
+      path: ../../gopurs/gopurs-enums
+    lazy:
+      path: ../../gopurs/gopurs-lazy
+    unfoldable:
+      path: ../../gopurs/gopurs-unfoldable

@@ -1,0 +1,18 @@
+package:
+  name: tidy-bench
+  dependencies:
+    - tidy
+    - prelude
+    - effect
+    - either
+    - maybe
+    - strings
+    - arrays
+    - foldable-traversable
+
+workspace:
+  packageSet:
+    registry: 77.7.0
+  extraPackages:
+    tidy:
+      path: ..
