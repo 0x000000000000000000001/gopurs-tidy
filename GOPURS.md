@@ -65,3 +65,19 @@ Same fixture and iteration count on both sides; checksums are identical
 
 Go is about **2.68×** slower than JavaScript on this formatter workload. This
 is a first measurement, not yet integrated into the altbak.pub result tables.
+
+## Compilation times
+
+Measured on the same checkout with `spago` 1.0.3 and the typed `purs` fork.
+These are indicative only: the JavaScript number includes parsing,
+type-checking and JS code generation, while the gopurs numbers are the
+backend's own `[gopurs] backend total` (frontend excluded).
+
+| Step | Time |
+| --- | ---: |
+| JavaScript `spago build` (273 modules) | 4.04 s |
+| gopurs backend, release | 14.88 s |
+| gopurs backend, `--dev` | 9.68 s |
+
+The Go columns match the altbak.pub compilation table's protocol; integrating
+this row would require a matched frontend/backend measurement campaign.
