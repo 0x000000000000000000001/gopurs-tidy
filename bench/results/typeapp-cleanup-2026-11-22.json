@@ -1,0 +1,86 @@
+{
+  "created_at_utc": "2026-11-22T17:15:37.681546+00:00",
+  "scope": "Exact task-owned temporary artifacts only; canonical builds, functional changes and unrelated work preserved.",
+  "active_process_check": "No process referenced any cleanup root before removal.",
+  "removed": [
+    {
+      "scope": "workspace",
+      "path": "altbak.pub/var/benchmark/tidy-typeapp-20261122",
+      "state": "removed",
+      "logical_bytes_removed": 394339207,
+      "files_removed": 3539,
+      "directories_removed": 1225
+    },
+    {
+      "scope": "temporary",
+      "path": "gopurs-tidy-typeapp-go-l6m_h15r",
+      "state": "removed",
+      "logical_bytes_removed": 595371142,
+      "files_removed": 4991,
+      "directories_removed": 883
+    },
+    {
+      "scope": "temporary",
+      "path": "gopurs-compiler-2900002688",
+      "state": "removed",
+      "logical_bytes_removed": 46426481,
+      "files_removed": 2,
+      "directories_removed": 1
+    },
+    {
+      "scope": "temporary",
+      "path": "tidy-printer-integration-8blnuP",
+      "state": "removed",
+      "logical_bytes_removed": 81555,
+      "files_removed": 4,
+      "directories_removed": 2
+    },
+    {
+      "scope": "workspace",
+      "path": "altbak.pub/var/benchmark/tidy-finalize-20261122",
+      "state": "removed",
+      "logical_bytes_removed": 13743794,
+      "files_removed": 12,
+      "directories_removed": 1
+    }
+  ],
+  "total_logical_bytes_removed": 1049962179,
+  "evidence_preserved": [
+    {
+      "path": "gopurs-tidy/bench/results/typeapp-go-2026-11-22.json",
+      "sha256": "159686730a6c8d33eea69a772af4addb664b2a87f19d816499241913a6e57fb6",
+      "bytes": 240609
+    },
+    {
+      "path": "gopurs-tidy/bench/results/typeapp-js-2026-11-22.json",
+      "sha256": "382164b9487ca21ae32d46241483d880f2e39cf10219ffc23710762683e7d7af",
+      "bytes": 176151
+    },
+    {
+      "path": "gopurs-tidy/bench/results/application-2026-11-22.json",
+      "sha256": "7f8230fabadcd44aa12de3f092d16375351d90f592cf339da745f95d15d8f646",
+      "bytes": 49203
+    },
+    {
+      "path": "gopurs-tidy/bench/results/full-output-2026-11-22.json",
+      "sha256": "62e41a990eb5b1cdb9584b87350bfabc066feec54d757bb28a6d80077748a71b",
+      "bytes": 60025
+    },
+    {
+      "path": "gopurs-tidy/bench/results/runtime-2026-11-22.json",
+      "sha256": "0af225ddd71400541eb84f65c81cf278f6b3db8c71bdc827b69766db4d5c6aa4",
+      "bytes": 22580
+    },
+    {
+      "path": "altbak.pub/bin/benchmark/tidy/results.json",
+      "sha256": "159686730a6c8d33eea69a772af4addb664b2a87f19d816499241913a6e57fb6",
+      "bytes": 240609
+    }
+  ],
+  "canonical_builds_preserved_sha256": {
+    "gopurs-tidy/bench-go/tidy-bench": "455e20877d74b86688867b8d76b1ca8e52064fc2eb9778d2e1410448dda28259",
+    "gopurs-tidy/bench-go/output/Main/corefn.json": "d7d2194971dcae8dce40ca3186472fb64f75355f9836820af9b6f2a682b7e96b",
+    "gopurs-tidy/bench/output/Main/index.js": "5be72625b5db21d71ed6bc2d7d6f36d9663ba3985d8d44c11aeb72a097204c79"
+  },
+  "note": "Logical bytes count file contents and symlink text, not physical disk blocks. Temporary paths use basenames; workspace paths are relative to htdocs."
+}

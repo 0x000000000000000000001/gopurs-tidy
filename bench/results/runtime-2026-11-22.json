@@ -1,0 +1,831 @@
+{
+  "date": "2026-11-22",
+  "machine": "Apple M4 Pro, macOS arm64, 14 cores",
+  "go_version": "go version go1.27.0 darwin/arm64",
+  "node_version": "v24.8.0",
+  "protocol": {
+    "fixture": "bench/fixture.purs (514 lines)",
+    "format_iterations_per_process": 10,
+    "page_width": 80,
+    "indent_width": 2,
+    "excluded_warmups_per_variant": 1,
+    "timed_runs_per_variant": 12,
+    "order": "four balanced orders repeated three times; no outlier exclusions",
+    "allocation_runs_per_Go_variant": 3,
+    "runtime": "wall-clock process duration; no profiling or allocation counters enabled",
+    "allocation": "ReadMemStats TotalAlloc/Mallocs deltas around 10 iterations; not peak/live memory",
+    "js_reference": "frozen pre-integration bench/output, node --stack-size=4000",
+    "gc_environment": {
+      "GOGC": null,
+      "GOMEMLIMIT": null,
+      "GOMAXPROCS": null,
+      "GODEBUG": null
+    }
+  },
+  "variants": {
+    "baseline": "original generated Go + common measurement driver",
+    "previous": "last validated temporary cumulative prototype",
+    "integrated": "fresh Go emitted by rebuilt native gopurs, with Tidy.Printer source integration",
+    "JS": "frozen original JavaScript"
+  },
+  "historical_tidy_reference": {
+    "source": "GOPURS.md First results",
+    "go_seconds": 1.063,
+    "JS_seconds": 0.397,
+    "go_over_JS": 2.68
+  },
+  "altbak_reference": {
+    "source": "../altbak.pub/README.md",
+    "stable_go_ms": 10.25,
+    "stable_JS_ms": 129.1,
+    "scope": "different computational suite; not a Tidy parity result; its tables were not changed"
+  },
+  "summary": {
+    "runtime_median_seconds": {
+      "baseline": 0.9567101250000001,
+      "previous": 0.6505500835,
+      "integrated": 0.5592109585,
+      "JS": 0.37672770850000004
+    },
+    "runtime_range_seconds": {
+      "baseline": [
+        0.950140625,
+        1.065613042
+      ],
+      "previous": [
+        0.641808584,
+        0.712957833
+      ],
+      "integrated": [
+        0.556867916,
+        0.604618625
+      ],
+      "JS": [
+        0.364033708,
+        0.402491625
+      ]
+    },
+    "runtime_reduction_fraction": 0.4154854810384703,
+    "speedup": 1.7108214895613496,
+    "marginal_runtime_reduction_fraction": 0.14040291027032048,
+    "marginal_speedup": 1.1633357208252921,
+    "baseline_over_JS": 2.5395268344059168,
+    "previous_over_JS": 1.7268442666196928,
+    "integrated_over_JS": 1.4843903060026709,
+    "allocations_median": {
+      "baseline": {
+        "total_alloc_bytes": 2268389760,
+        "mallocs": 31865485,
+        "num_gc": 990
+      },
+      "previous": {
+        "total_alloc_bytes": 1115960536,
+        "mallocs": 23601934,
+        "num_gc": 485
+      },
+      "integrated": {
+        "total_alloc_bytes": 943138432,
+        "mallocs": 20148504,
+        "num_gc": 410
+      }
+    },
+    "allocation_bytes_reduction_fraction": 0.58422558211513,
+    "allocation_objects_reduction_fraction": 0.3677013232342141,
+    "marginal_allocation_bytes_reduction_fraction": 0.15486399243064275,
+    "marginal_allocation_objects_reduction_fraction": 0.1463197888783182,
+    "correctness": {
+      "baseline": {
+        "bytes": 14624,
+        "sha256": "c8f7710cf563c22508c32ced1e9bbd15a12f3ea547e88bee2410cd5dfbb3395e"
+      },
+      "previous": {
+        "bytes": 14624,
+        "sha256": "c8f7710cf563c22508c32ced1e9bbd15a12f3ea547e88bee2410cd5dfbb3395e"
+      },
+      "integrated": {
+        "bytes": 14624,
+        "sha256": "c8f7710cf563c22508c32ced1e9bbd15a12f3ea547e88bee2410cd5dfbb3395e"
+      },
+      "JS": {
+        "bytes": 14624,
+        "sha256": "c8f7710cf563c22508c32ced1e9bbd15a12f3ea547e88bee2410cd5dfbb3395e"
+      }
+    },
+    "binary_sha256": {
+      "baseline": "84bef3598ddfa1b9180cd108b7287ceb28fb2385c63245a0944d0ca345a7bf0d",
+      "previous": "8730620c3560e3f5000f48465c41f305720bbe63e93e1d7d4749c2ef3fa26939",
+      "integrated": "a346e3a8dc9b8f9defab4f8f03dfc291d0ae9c242007d457e48a5fb43c10e656"
+    }
+  },
+  "paired_integrated_vs_previous": {
+    "faster_rounds": 12,
+    "rounds": 12,
+    "median_reduction_fraction": 0.13922193216746453
+  },
+  "runtime_raw": {
+    "warmups": [
+      {
+        "variant": "baseline",
+        "seconds": 1.005769583
+      },
+      {
+        "variant": "previous",
+        "seconds": 0.679539792
+      },
+      {
+        "variant": "integrated",
+        "seconds": 0.590504084
+      },
+      {
+        "variant": "JS",
+        "seconds": 0.404183708
+      }
+    ],
+    "runs": [
+      {
+        "round": 1,
+        "variant": "baseline",
+        "seconds": 1.065613042
+      },
+      {
+        "round": 1,
+        "variant": "previous",
+        "seconds": 0.701786709
+      },
+      {
+        "round": 1,
+        "variant": "JS",
+        "seconds": 0.402491625
+      },
+      {
+        "round": 1,
+        "variant": "integrated",
+        "seconds": 0.604618625
+      },
+      {
+        "round": 2,
+        "variant": "previous",
+        "seconds": 0.712957833
+      },
+      {
+        "round": 2,
+        "variant": "integrated",
+        "seconds": 0.586757834
+      },
+      {
+        "round": 2,
+        "variant": "baseline",
+        "seconds": 0.961821209
+      },
+      {
+        "round": 2,
+        "variant": "JS",
+        "seconds": 0.380355959
+      },
+      {
+        "round": 3,
+        "variant": "integrated",
+        "seconds": 0.558905917
+      },
+      {
+        "round": 3,
+        "variant": "JS",
+        "seconds": 0.378864709
+      },
+      {
+        "round": 3,
+        "variant": "previous",
+        "seconds": 0.661743375
+      },
+      {
+        "round": 3,
+        "variant": "baseline",
+        "seconds": 0.955315042
+      },
+      {
+        "round": 4,
+        "variant": "JS",
+        "seconds": 0.364339375
+      },
+      {
+        "round": 4,
+        "variant": "baseline",
+        "seconds": 0.950433958
+      },
+      {
+        "round": 4,
+        "variant": "integrated",
+        "seconds": 0.558879167
+      },
+      {
+        "round": 4,
+        "variant": "previous",
+        "seconds": 0.641808584
+      },
+      {
+        "round": 5,
+        "variant": "baseline",
+        "seconds": 0.950140625
+      },
+      {
+        "round": 5,
+        "variant": "previous",
+        "seconds": 0.65074375
+      },
+      {
+        "round": 5,
+        "variant": "JS",
+        "seconds": 0.3787595
+      },
+      {
+        "round": 5,
+        "variant": "integrated",
+        "seconds": 0.560723625
+      },
+      {
+        "round": 6,
+        "variant": "previous",
+        "seconds": 0.650225542
+      },
+      {
+        "round": 6,
+        "variant": "integrated",
+        "seconds": 0.55920325
+      },
+      {
+        "round": 6,
+        "variant": "baseline",
+        "seconds": 0.957212625
+      },
+      {
+        "round": 6,
+        "variant": "JS",
+        "seconds": 0.3660735
+      },
+      {
+        "round": 7,
+        "variant": "integrated",
+        "seconds": 0.556867916
+      },
+      {
+        "round": 7,
+        "variant": "JS",
+        "seconds": 0.364033708
+      },
+      {
+        "round": 7,
+        "variant": "previous",
+        "seconds": 0.645233333
+      },
+      {
+        "round": 7,
+        "variant": "baseline",
+        "seconds": 0.953338583
+      },
+      {
+        "round": 8,
+        "variant": "JS",
+        "seconds": 0.367923959
+      },
+      {
+        "round": 8,
+        "variant": "baseline",
+        "seconds": 0.956207625
+      },
+      {
+        "round": 8,
+        "variant": "integrated",
+        "seconds": 0.562407584
+      },
+      {
+        "round": 8,
+        "variant": "previous",
+        "seconds": 0.649585292
+      },
+      {
+        "round": 9,
+        "variant": "baseline",
+        "seconds": 0.963345209
+      },
+      {
+        "round": 9,
+        "variant": "previous",
+        "seconds": 0.650805208
+      },
+      {
+        "round": 9,
+        "variant": "JS",
+        "seconds": 0.367426792
+      },
+      {
+        "round": 9,
+        "variant": "integrated",
+        "seconds": 0.559218667
+      },
+      {
+        "round": 10,
+        "variant": "previous",
+        "seconds": 0.646341792
+      },
+      {
+        "round": 10,
+        "variant": "integrated",
+        "seconds": 0.5581925
+      },
+      {
+        "round": 10,
+        "variant": "baseline",
+        "seconds": 0.95395425
+      },
+      {
+        "round": 10,
+        "variant": "JS",
+        "seconds": 0.379245583
+      },
+      {
+        "round": 11,
+        "variant": "integrated",
+        "seconds": 0.55888925
+      },
+      {
+        "round": 11,
+        "variant": "JS",
+        "seconds": 0.374695917
+      },
+      {
+        "round": 11,
+        "variant": "previous",
+        "seconds": 0.650356417
+      },
+      {
+        "round": 11,
+        "variant": "baseline",
+        "seconds": 0.982431417
+      },
+      {
+        "round": 12,
+        "variant": "JS",
+        "seconds": 0.378887667
+      },
+      {
+        "round": 12,
+        "variant": "baseline",
+        "seconds": 0.965690667
+      },
+      {
+        "round": 12,
+        "variant": "integrated",
+        "seconds": 0.560354708
+      },
+      {
+        "round": 12,
+        "variant": "previous",
+        "seconds": 0.653250875
+      }
+    ]
+  },
+  "allocations_raw": [
+    {
+      "round": 1,
+      "variant": "baseline",
+      "elapsed_ns": 947000500,
+      "gc_pause_ns": 29476756,
+      "mallocs": 31865485,
+      "num_gc": 987,
+      "total_alloc_bytes": 2267849712,
+      "external_seconds": 0.950976917
+    },
+    {
+      "round": 1,
+      "variant": "previous",
+      "elapsed_ns": 648993750,
+      "gc_pause_ns": 15196948,
+      "mallocs": 23602186,
+      "num_gc": 486,
+      "total_alloc_bytes": 1116649704,
+      "external_seconds": 0.652958208
+    },
+    {
+      "round": 1,
+      "variant": "integrated",
+      "elapsed_ns": 564126334,
+      "gc_pause_ns": 12672218,
+      "mallocs": 20148421,
+      "num_gc": 410,
+      "total_alloc_bytes": 942446392,
+      "external_seconds": 0.568286125
+    },
+    {
+      "round": 2,
+      "variant": "integrated",
+      "elapsed_ns": 558636834,
+      "gc_pause_ns": 12989472,
+      "mallocs": 20148504,
+      "num_gc": 409,
+      "total_alloc_bytes": 943138432,
+      "external_seconds": 0.562489167
+    },
+    {
+      "round": 2,
+      "variant": "previous",
+      "elapsed_ns": 702801875,
+      "gc_pause_ns": 16926468,
+      "mallocs": 23601934,
+      "num_gc": 485,
+      "total_alloc_bytes": 1115960536,
+      "external_seconds": 0.7068725
+    },
+    {
+      "round": 2,
+      "variant": "baseline",
+      "elapsed_ns": 1032397208,
+      "gc_pause_ns": 32487513,
+      "mallocs": 31865813,
+      "num_gc": 993,
+      "total_alloc_bytes": 2270538936,
+      "external_seconds": 1.036636417
+    },
+    {
+      "round": 3,
+      "variant": "baseline",
+      "elapsed_ns": 987043625,
+      "gc_pause_ns": 29967910,
+      "mallocs": 31865457,
+      "num_gc": 990,
+      "total_alloc_bytes": 2268389760,
+      "external_seconds": 0.991257417
+    },
+    {
+      "round": 3,
+      "variant": "previous",
+      "elapsed_ns": 664841750,
+      "gc_pause_ns": 15056379,
+      "mallocs": 23601772,
+      "num_gc": 484,
+      "total_alloc_bytes": 1114592832,
+      "external_seconds": 0.669177083
+    },
+    {
+      "round": 3,
+      "variant": "integrated",
+      "elapsed_ns": 581925292,
+      "gc_pause_ns": 13337535,
+      "mallocs": 20148592,
+      "num_gc": 412,
+      "total_alloc_bytes": 943465400,
+      "external_seconds": 0.585951291
+    }
+  ],
+  "correctness_corpus": [
+    {
+      "fixture": "fixture.purs",
+      "bytes_equal": true,
+      "results": {
+        "baseline": {
+          "bytes": 14624,
+          "sha256": "c8f7710cf563c22508c32ced1e9bbd15a12f3ea547e88bee2410cd5dfbb3395e"
+        },
+        "previous": {
+          "bytes": 14624,
+          "sha256": "c8f7710cf563c22508c32ced1e9bbd15a12f3ea547e88bee2410cd5dfbb3395e"
+        },
+        "integrated": {
+          "bytes": 14624,
+          "sha256": "c8f7710cf563c22508c32ced1e9bbd15a12f3ea547e88bee2410cd5dfbb3395e"
+        },
+        "JS": {
+          "bytes": 14624,
+          "sha256": "c8f7710cf563c22508c32ced1e9bbd15a12f3ea547e88bee2410cd5dfbb3395e"
+        }
+      }
+    },
+    {
+      "fixture": "src/Tidy/Hang.purs",
+      "bytes_equal": true,
+      "results": {
+        "baseline": {
+          "bytes": 11207,
+          "sha256": "9b29e35b96fdd5fc46462b15e2d6ad3c1b594b6f495703a1076fac9d46bec251"
+        },
+        "previous": {
+          "bytes": 11207,
+          "sha256": "9b29e35b96fdd5fc46462b15e2d6ad3c1b594b6f495703a1076fac9d46bec251"
+        },
+        "integrated": {
+          "bytes": 11207,
+          "sha256": "9b29e35b96fdd5fc46462b15e2d6ad3c1b594b6f495703a1076fac9d46bec251"
+        }
+      }
+    },
+    {
+      "fixture": "src/Tidy/Operators/Defaults.purs",
+      "bytes_equal": true,
+      "results": {
+        "baseline": {
+          "bytes": 11823,
+          "sha256": "d25e808521fdf2a56ba81bfd58d61c6023cdab223aa80a70249902619521efe3"
+        },
+        "previous": {
+          "bytes": 11823,
+          "sha256": "d25e808521fdf2a56ba81bfd58d61c6023cdab223aa80a70249902619521efe3"
+        },
+        "integrated": {
+          "bytes": 11823,
+          "sha256": "d25e808521fdf2a56ba81bfd58d61c6023cdab223aa80a70249902619521efe3"
+        }
+      }
+    },
+    {
+      "fixture": "src/Tidy/Operators.purs",
+      "bytes_equal": true,
+      "results": {
+        "baseline": {
+          "bytes": 3408,
+          "sha256": "b4c68ede229408ec072e7bc60399982f52658f8586690c5be5d189e154cf3826"
+        },
+        "previous": {
+          "bytes": 3408,
+          "sha256": "b4c68ede229408ec072e7bc60399982f52658f8586690c5be5d189e154cf3826"
+        },
+        "integrated": {
+          "bytes": 3408,
+          "sha256": "b4c68ede229408ec072e7bc60399982f52658f8586690c5be5d189e154cf3826"
+        }
+      }
+    },
+    {
+      "fixture": "src/Tidy/Precedence.purs",
+      "bytes_equal": true,
+      "results": {
+        "baseline": {
+          "bytes": 7532,
+          "sha256": "a61e082840390e8da4ba951d467a1e26c26523f3ab3b8287c044c2874dfc9da0"
+        },
+        "previous": {
+          "bytes": 7532,
+          "sha256": "a61e082840390e8da4ba951d467a1e26c26523f3ab3b8287c044c2874dfc9da0"
+        },
+        "integrated": {
+          "bytes": 7532,
+          "sha256": "a61e082840390e8da4ba951d467a1e26c26523f3ab3b8287c044c2874dfc9da0"
+        }
+      }
+    },
+    {
+      "fixture": "src/Tidy/Printer.purs",
+      "bytes_equal": true,
+      "results": {
+        "baseline": {
+          "bytes": 833,
+          "sha256": "dbf560ef2cec3f94306a5d8dfd11ff5cb1a6d7a05ec508cc48887d38ef431539"
+        },
+        "previous": {
+          "bytes": 833,
+          "sha256": "dbf560ef2cec3f94306a5d8dfd11ff5cb1a6d7a05ec508cc48887d38ef431539"
+        },
+        "integrated": {
+          "bytes": 833,
+          "sha256": "dbf560ef2cec3f94306a5d8dfd11ff5cb1a6d7a05ec508cc48887d38ef431539"
+        }
+      }
+    },
+    {
+      "fixture": "src/Tidy/Token.purs",
+      "bytes_equal": true,
+      "results": {
+        "baseline": {
+          "bytes": 2151,
+          "sha256": "6fa46546c0cf5f1f8d2355aab6d36161bf806acfd77e5c331bab9e5a04095213"
+        },
+        "previous": {
+          "bytes": 2151,
+          "sha256": "6fa46546c0cf5f1f8d2355aab6d36161bf806acfd77e5c331bab9e5a04095213"
+        },
+        "integrated": {
+          "bytes": 2151,
+          "sha256": "6fa46546c0cf5f1f8d2355aab6d36161bf806acfd77e5c331bab9e5a04095213"
+        }
+      }
+    },
+    {
+      "fixture": "src/Tidy/Util.purs",
+      "bytes_equal": true,
+      "results": {
+        "baseline": {
+          "bytes": 629,
+          "sha256": "a4c625430350da878590d20294e2c2eb7d8581e6ebd5bca092787ea12c9758a2"
+        },
+        "previous": {
+          "bytes": 629,
+          "sha256": "a4c625430350da878590d20294e2c2eb7d8581e6ebd5bca092787ea12c9758a2"
+        },
+        "integrated": {
+          "bytes": 629,
+          "sha256": "a4c625430350da878590d20294e2c2eb7d8581e6ebd5bca092787ea12c9758a2"
+        }
+      }
+    },
+    {
+      "fixture": "src/Tidy.purs",
+      "bytes_equal": true,
+      "results": {
+        "baseline": {
+          "bytes": 52909,
+          "sha256": "55bfcdfdba95c1e5ea8e2b03f8a16042170562c53b2c5b15f3b438cbe9df9b02"
+        },
+        "previous": {
+          "bytes": 52909,
+          "sha256": "55bfcdfdba95c1e5ea8e2b03f8a16042170562c53b2c5b15f3b438cbe9df9b02"
+        },
+        "integrated": {
+          "bytes": 52909,
+          "sha256": "55bfcdfdba95c1e5ea8e2b03f8a16042170562c53b2c5b15f3b438cbe9df9b02"
+        }
+      }
+    }
+  ],
+  "correctness_cases": [
+    {
+      "case": "unicode-comments",
+      "all_four_outputs_equal": true,
+      "bytes": 51,
+      "sha256": "891feb4d216ca1200827158e2ae00c350aa1bc89cfc2c9f72bee81930d33a7d5",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    },
+    {
+      "case": "layout-let",
+      "all_four_outputs_equal": true,
+      "bytes": 63,
+      "sha256": "99b45fe6f8de0bdc06374fe6271e00e7dbf6a45587b71bc0a4d1eeec6a350b08",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    },
+    {
+      "case": "crlf",
+      "all_four_outputs_equal": true,
+      "bytes": 46,
+      "sha256": "d41a6d39293c0d0c7905b8904a1b45285f20a444b1e898633035f911522999c5",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    },
+    {
+      "case": "missing-expression",
+      "all_four_outputs_equal": true,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "go_statuses": {
+        "baseline": "empty formatter result",
+        "previous": "empty formatter result",
+        "integrated": "empty formatter result"
+      }
+    },
+    {
+      "case": "unclosed-array",
+      "all_four_outputs_equal": true,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "go_statuses": {
+        "baseline": "empty formatter result",
+        "previous": "empty formatter result",
+        "integrated": "empty formatter result"
+      }
+    },
+    {
+      "case": "unclosed-string",
+      "all_four_outputs_equal": true,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "go_statuses": {
+        "baseline": "empty formatter result",
+        "previous": "empty formatter result",
+        "integrated": "empty formatter result"
+      }
+    },
+    {
+      "case": "invalid-header",
+      "all_four_outputs_equal": true,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "go_statuses": {
+        "baseline": "empty formatter result",
+        "previous": "empty formatter result",
+        "integrated": "empty formatter result"
+      }
+    },
+    {
+      "case": "missing-let-body",
+      "all_four_outputs_equal": true,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "go_statuses": {
+        "baseline": "empty formatter result",
+        "previous": "empty formatter result",
+        "integrated": "empty formatter result"
+      }
+    },
+    {
+      "case": "multiple-errors",
+      "all_four_outputs_equal": true,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "go_statuses": {
+        "baseline": "empty formatter result",
+        "previous": "empty formatter result",
+        "integrated": "empty formatter result"
+      }
+    },
+    {
+      "case": "layout-do",
+      "all_four_outputs_equal": true,
+      "bytes": 64,
+      "sha256": "6652d2f8b1e004d69ed48e14b390449fff3080fde39790a39332c34b17f7cde8",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    },
+    {
+      "case": "layout-ado",
+      "all_four_outputs_equal": true,
+      "bytes": 67,
+      "sha256": "6bd0820ad47ba743351a9cc2e9da73c144f00aea961f3b57a8ddccb189e3f05c",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    },
+    {
+      "case": "layout-case-guards",
+      "all_four_outputs_equal": true,
+      "bytes": 67,
+      "sha256": "2f76bc00d6f1c9426e95273ffac6585d23a95e5fd6d9ac6785674f2eb02db2f9",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    },
+    {
+      "case": "layout-where",
+      "all_four_outputs_equal": true,
+      "bytes": 44,
+      "sha256": "13d449055867e9d39b9fd08775a7f2eb9bafe8aa62f6068ae62ba104e3fb961d",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    },
+    {
+      "case": "layout-keyword-fields",
+      "all_four_outputs_equal": true,
+      "bytes": 62,
+      "sha256": "f89d6c9fa711ef4ec7912c06669d442fb4237b79b011133e6819c877261fd03e",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    },
+    {
+      "case": "layout-comments",
+      "all_four_outputs_equal": true,
+      "bytes": 76,
+      "sha256": "c4e1bfa97eb58fe8ccf27a052837a9bf880545074fdbc8a8dd4b3a2a7fbf7702",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    },
+    {
+      "case": "layout-inline-let",
+      "all_four_outputs_equal": true,
+      "bytes": 43,
+      "sha256": "9ec2015f3e85ab79e29dcd4c76dae20e3a8d4a7e06ed13b6185d79446a8591ec",
+      "go_statuses": {
+        "baseline": "formatted",
+        "previous": "formatted",
+        "integrated": "formatted"
+      }
+    }
+  ],
+  "validation": {
+    "compiler": "8 Release fixtures via JS host; 2 Dev fixtures via rebuilt native host; targeted conversion, record, runtime/race, parser/race and FFI suites",
+    "tidy": "full Tidy test/snapshot suite and new printer tests passed; Go FFI printer race checks passed",
+    "limits": "JS compared on main fixture + 16 extra cases; whole 9-file corpus compared across Go variants. Malformed cases compare empty formatOnce result, not diagnostics. Full compiler qualification campaign not run; Rust binary not rebuilt."
+  },
+  "JS_frontend_provenance": "Typed PureScript fork 0.15.16, identified from generated module headers. This historical reference is not the official PureScript 0.15.15 used by the current application table."
+}

@@ -1,0 +1,2432 @@
+{
+  "date": "2026-11-22",
+  "purpose": "Compare full output consumption with length-only on the same integrated Go and frozen JS formatter; compiler source unchanged.",
+  "environment": {
+    "hardware": "Apple M4 Pro, 14 cores, macOS arm64",
+    "go": "go version go1.27.0 darwin/arm64",
+    "node": "v24.8.0"
+  },
+  "protocol": {
+    "iterations_per_process": 10,
+    "fixture": "bench/fixture.purs (514 lines, ASCII); formatted output 14624 bytes",
+    "timed_runs_per_variant": 18,
+    "excluded_warmup_runs_per_variant": 1,
+    "order": "six balanced positions, repeated three times; every sample retained",
+    "timing": "wall-clock process duration including startup; no GC instrumentation or concurrent task builds",
+    "drivers": "same direct formatOnce driver per backend for all three modes; input loaded before allocation counters",
+    "modes": {
+      "length": "UTF-16 length: JS .length, Go CountStringCodeUnits",
+      "utf16": "FNV-1a-style 32-bit accumulation of every UTF-16 code unit, including reconstructed surrogate pairs in Go",
+      "utf8": "UTF-8 Buffer.from and FNV-1a32 in JS; FNV-1a32 over native UTF-8 string bytes in Go; sum of all ten hashes is printed"
+    },
+    "allocations": "3 separate runs per backend/mode; Go TotalAlloc/Mallocs deltas; JS estimated heap growth summed from allocated= GC traces between forced GCs, external buffers separately accounted",
+    "JS_allocations_crosscheck": "3 separate Inspector sampling runs (32768-byte interval, objects collected by minor/major GC included); estimates, not exact equivalence with Go counters",
+    "JS_counter_definition": "https://raw.githubusercontent.com/nodejs/node/v24.8.0/deps/v8/src/heap/gc-tracer.cc#L759",
+    "JS_empty_control_limit": "One empty control showed unsigned underflow (2^64-136), reflecting negative heap-size growth; no affected workload traces; no empty control subtracted",
+    "unicode_scope": "Verification requires well-formed Unicode; isolated surrogate output rejected rather than compared with different encoders"
+  },
+  "results": {
+    "summary": {
+      "length": {
+        "Go": {
+          "median_seconds": 0.5455190835,
+          "range_seconds": [
+            0.520948417,
+            0.613006042
+          ],
+          "total_alloc_bytes": 940486768,
+          "mallocs": 20147947,
+          "num_gc": 404
+        },
+        "JS": {
+          "median_seconds": 0.37737716649999997,
+          "range_seconds": [
+            0.355871375,
+            0.683564167
+          ],
+          "v8_heap_allocation_estimate_bytes": 933777256,
+          "utf8_buffer_payload_bytes": 0,
+          "gc_events": 44
+        },
+        "Go_over_JS": 1.4455540290352995
+      },
+      "utf16": {
+        "Go": {
+          "median_seconds": 0.5445643124999999,
+          "range_seconds": [
+            0.522187709,
+            0.578519
+          ],
+          "total_alloc_bytes": 940526432,
+          "mallocs": 20147951,
+          "num_gc": 403
+        },
+        "JS": {
+          "median_seconds": 0.380635646,
+          "range_seconds": [
+            0.350616917,
+            0.649993125
+          ],
+          "v8_heap_allocation_estimate_bytes": 937674720,
+          "utf8_buffer_payload_bytes": 0,
+          "gc_events": 42
+        },
+        "Go_over_JS": 1.4306708218809332
+      },
+      "utf8": {
+        "Go": {
+          "median_seconds": 0.5388092295,
+          "range_seconds": [
+            0.528129917,
+            0.619142084
+          ],
+          "total_alloc_bytes": 941235856,
+          "mallocs": 20148016,
+          "num_gc": 405
+        },
+        "JS": {
+          "median_seconds": 0.3867315415,
+          "range_seconds": [
+            0.355212042,
+            0.61798475
+          ],
+          "v8_heap_allocation_estimate_bytes": 936004856,
+          "utf8_buffer_payload_bytes": 146240,
+          "gc_events": 43
+        },
+        "Go_over_JS": 1.3932383880821886
+      }
+    },
+    "changes_from_length": {
+      "Go": {
+        "utf16": {
+          "difference_of_medians_seconds": -0.0009547710000000764,
+          "paired_median_difference_seconds": -0.004490645999999987,
+          "paired_median_bootstrap_95pct_seconds": [
+            -0.011039145499999958,
+            0.00562497949999996
+          ]
+        },
+        "utf8": {
+          "difference_of_medians_seconds": -0.006709854000000015,
+          "paired_median_difference_seconds": -0.004410417,
+          "paired_median_bootstrap_95pct_seconds": [
+            -0.009975916500000015,
+            0.004660271000000049
+          ]
+        }
+      },
+      "JS": {
+        "utf16": {
+          "difference_of_medians_seconds": 0.003258479500000022,
+          "paired_median_difference_seconds": -0.004729875500000008,
+          "paired_median_bootstrap_95pct_seconds": [
+            -0.025591542000000023,
+            0.010834542000000003
+          ]
+        },
+        "utf8": {
+          "difference_of_medians_seconds": 0.009354375000000026,
+          "paired_median_difference_seconds": 0.0029801255000000137,
+          "paired_median_bootstrap_95pct_seconds": [
+            -0.012714500500000003,
+            0.1871821455
+          ]
+        }
+      }
+    },
+    "binary_sha256": "1233255f1f02354491e718f04ab649c606ec3722aab6dbfac1d7cff9b218428b",
+    "runtime_environment": {
+      "GOGC": null,
+      "GOMEMLIMIT": null,
+      "GOMAXPROCS": null,
+      "GODEBUG": null,
+      "NODE_OPTIONS": null
+    }
+  },
+  "runtime_raw": {
+    "warmups": [
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.558290042,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        }
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.573165958,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        }
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.520885666,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        }
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.359398,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        }
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.53679425,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        }
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.616556375,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        }
+      }
+    ],
+    "runs": [
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.545331625,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 1,
+        "position": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.367600125,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 1,
+        "position": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.530686041,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 1,
+        "position": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.530019875,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 1,
+        "position": 4
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.5377315,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 1,
+        "position": 5
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.408233,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 1,
+        "position": 6
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.377539583,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 2,
+        "position": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.578519,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 2,
+        "position": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.582750666,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 2,
+        "position": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.60208625,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 2,
+        "position": 4
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.61798475,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 2,
+        "position": 5
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.555422417,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 2,
+        "position": 6
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.573455542,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 3,
+        "position": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.358418125,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 3,
+        "position": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.359496959,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 3,
+        "position": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.528129917,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 3,
+        "position": 4
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.520948417,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 3,
+        "position": 5
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.376967625,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 3,
+        "position": 6
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.350616917,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 4,
+        "position": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.530131,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 4,
+        "position": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.522187709,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 4,
+        "position": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.3579685,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 4,
+        "position": 4
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.367598209,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 4,
+        "position": 5
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.576597917,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 4,
+        "position": 6
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.593107875,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 5,
+        "position": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.60926175,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 5,
+        "position": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.382031625,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 5,
+        "position": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.530381042,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 5,
+        "position": 4
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.534222875,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 5,
+        "position": 5
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.371197083,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 5,
+        "position": 6
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.366527583,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 6,
+        "position": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.526223208,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 6,
+        "position": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.529407708,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 6,
+        "position": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.630093458,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 6,
+        "position": 4
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.401441958,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 6,
+        "position": 5
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.54533725,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 6,
+        "position": 6
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.533878333,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 7,
+        "position": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.367664459,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 7,
+        "position": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.388318208,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 7,
+        "position": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.543791375,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 7,
+        "position": 4
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.5377315,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 7,
+        "position": 5
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.379239667,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 7,
+        "position": 6
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.630539792,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 8,
+        "position": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.554642375,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 8,
+        "position": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.567839833,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 8,
+        "position": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.596517291,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 8,
+        "position": 4
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.372377667,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 8,
+        "position": 5
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.55267225,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 8,
+        "position": 6
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.549747541,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 9,
+        "position": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.603987042,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 9,
+        "position": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.37721475,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 9,
+        "position": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.547055583,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 9,
+        "position": 4
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.533889417,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 9,
+        "position": 5
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.600774417,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 9,
+        "position": 6
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.376166875,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 10,
+        "position": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.537470584,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 10,
+        "position": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.535084459,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 10,
+        "position": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.385144875,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 10,
+        "position": 4
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.392445792,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 10,
+        "position": 5
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.603758,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 10,
+        "position": 6
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.619142084,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 11,
+        "position": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.39970975,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 11,
+        "position": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.649993125,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 11,
+        "position": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.613006042,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 11,
+        "position": 4
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.577651458,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 11,
+        "position": 5
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.683564167,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 11,
+        "position": 6
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.389544583,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 12,
+        "position": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.556006333,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 12,
+        "position": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.570081959,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 12,
+        "position": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.402636459,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 12,
+        "position": 4
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.369350459,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 12,
+        "position": 5
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.5471255,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 12,
+        "position": 6
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.549658583,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 13,
+        "position": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.382284625,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 13,
+        "position": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.3699475,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 13,
+        "position": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.5509955,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 13,
+        "position": 4
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.539855709,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 13,
+        "position": 5
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.387541625,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 13,
+        "position": 6
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.582407667,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 14,
+        "position": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.542251333,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 14,
+        "position": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.533153917,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 14,
+        "position": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.353164708,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 14,
+        "position": 4
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.372676833,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 14,
+        "position": 5
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.53582225,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 14,
+        "position": 6
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.547838917,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 15,
+        "position": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.588995667,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 15,
+        "position": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.355871375,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 15,
+        "position": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.546313291,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 15,
+        "position": 4
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.55646225,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 15,
+        "position": 5
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.355212042,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 15,
+        "position": 6
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.355489625,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 16,
+        "position": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.540248208,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 16,
+        "position": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.540979167,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 16,
+        "position": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.592807917,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 16,
+        "position": 4
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.381081167,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 16,
+        "position": 5
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.545706542,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 16,
+        "position": 6
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.53776275,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 17,
+        "position": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.364895584,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 17,
+        "position": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.362276834,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 17,
+        "position": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.542558833,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 17,
+        "position": 4
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.534218417,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 17,
+        "position": 5
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.358276,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 17,
+        "position": 6
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.58186575,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "round": 18,
+        "position": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.539251459,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "round": 18,
+        "position": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.535226708,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "round": 18,
+        "position": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.370587375,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "round": 18,
+        "position": 4
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.362206458,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "round": 18,
+        "position": 5
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.534997542,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "round": 18,
+        "position": 6
+      }
+    ]
+  },
+  "allocations_raw": {
+    "runs": [
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.532526792,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "mallocs": 20147886,
+        "num_gc": 404,
+        "total_alloc_bytes": 940266960,
+        "round": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.396203375,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "v8_heap_allocation_estimate_bytes": 933777256,
+        "gc_events": 44,
+        "utf8_buffer_payload_bytes": 0,
+        "round": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.550536042,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "mallocs": 20147951,
+        "num_gc": 406,
+        "total_alloc_bytes": 940766112,
+        "round": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.399180625,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "v8_heap_allocation_estimate_bytes": 937674720,
+        "gc_events": 42,
+        "utf8_buffer_payload_bytes": 0,
+        "round": 1
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.539153084,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "mallocs": 20148089,
+        "num_gc": 404,
+        "total_alloc_bytes": 941718688,
+        "round": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.548630792,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "v8_heap_allocation_estimate_bytes": 933043768,
+        "gc_events": 45,
+        "utf8_buffer_payload_bytes": 146240,
+        "round": 1
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.395824125,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "v8_heap_allocation_estimate_bytes": 936004856,
+        "gc_events": 43,
+        "utf8_buffer_payload_bytes": 146240,
+        "round": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.554022583,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "mallocs": 20147930,
+        "num_gc": 406,
+        "total_alloc_bytes": 940784912,
+        "round": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.677979,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "v8_heap_allocation_estimate_bytes": 938699296,
+        "gc_events": 42,
+        "utf8_buffer_payload_bytes": 0,
+        "round": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.540075958,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "mallocs": 20147827,
+        "num_gc": 400,
+        "total_alloc_bytes": 939959304,
+        "round": 2
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.68890475,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "v8_heap_allocation_estimate_bytes": 937865624,
+        "gc_events": 42,
+        "utf8_buffer_payload_bytes": 0,
+        "round": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.535840125,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "mallocs": 20147947,
+        "num_gc": 404,
+        "total_alloc_bytes": 940486768,
+        "round": 2
+      },
+      {
+        "backend": "Go",
+        "mode": "length",
+        "seconds": 0.551074833,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 146240,
+          "iterations": 10,
+          "mode": "length"
+        },
+        "mallocs": 20148086,
+        "num_gc": 405,
+        "total_alloc_bytes": 941136064,
+        "round": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.396266625,
+        "result": {
+          "mode": "length",
+          "iterations": 10,
+          "checksum": 146240,
+          "bytes_consumed": 0
+        },
+        "v8_heap_allocation_estimate_bytes": 933760968,
+        "gc_events": 44,
+        "utf8_buffer_payload_bytes": 0,
+        "round": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "utf16",
+        "seconds": 0.530789125,
+        "result": {
+          "bytes_consumed": 0,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf16"
+        },
+        "mallocs": 20147954,
+        "num_gc": 403,
+        "total_alloc_bytes": 940526432,
+        "round": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.651741458,
+        "result": {
+          "mode": "utf16",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 0
+        },
+        "v8_heap_allocation_estimate_bytes": 934476368,
+        "gc_events": 44,
+        "utf8_buffer_payload_bytes": 0,
+        "round": 3
+      },
+      {
+        "backend": "Go",
+        "mode": "utf8",
+        "seconds": 0.538651125,
+        "result": {
+          "bytes_consumed": 146240,
+          "checksum": 32412660080,
+          "iterations": 10,
+          "mode": "utf8"
+        },
+        "mallocs": 20148016,
+        "num_gc": 405,
+        "total_alloc_bytes": 941235856,
+        "round": 3
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.664136042,
+        "result": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "v8_heap_allocation_estimate_bytes": 938741520,
+        "gc_events": 42,
+        "utf8_buffer_payload_bytes": 146240,
+        "round": 3
+      }
+    ],
+    "empty_JS_controls": [
+      {
+        "backend": "JS",
+        "mode": "length",
+        "seconds": 0.074702667,
+        "result": {
+          "mode": "length",
+          "iterations": 0,
+          "checksum": 0,
+          "bytes_consumed": 0
+        },
+        "v8_heap_allocation_estimate_bytes": 664,
+        "gc_events": 1,
+        "utf8_buffer_payload_bytes": 0
+      },
+      {
+        "backend": "JS",
+        "mode": "utf16",
+        "seconds": 0.083553792,
+        "result": {
+          "mode": "utf16",
+          "iterations": 0,
+          "checksum": 0,
+          "bytes_consumed": 0
+        },
+        "v8_heap_allocation_estimate_bytes": 456,
+        "gc_events": 1,
+        "utf8_buffer_payload_bytes": 0
+      },
+      {
+        "backend": "JS",
+        "mode": "utf8",
+        "seconds": 0.091614917,
+        "result": {
+          "mode": "utf8",
+          "iterations": 0,
+          "checksum": 0,
+          "bytes_consumed": 0
+        },
+        "v8_heap_allocation_estimate_bytes": 18446744073709551480,
+        "gc_events": 1,
+        "utf8_buffer_payload_bytes": 0,
+        "counter_underflow": true,
+        "signed_heap_growth_bytes": -136,
+        "interpretation": "size_t subtraction wrapped on a small negative heap-size change; not an allocation count; control not subtracted from workload"
+      }
+    ],
+    "counter_underflow_audit": [
+      {
+        "trace": "utf8-0-1795364950321345000.log",
+        "raw_unsigned_values": [
+          18446744073709551480
+        ],
+        "signed_deltas": [
+          -136
+        ]
+      }
+    ]
+  },
+  "JS_sampling_crosscheck": {
+    "runs": [
+      {
+        "run": 1,
+        "workload": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "sampling_interval": 32768,
+        "self_size_sum": 923848584,
+        "sample_size_sum": 924516968,
+        "samples": 28151,
+        "nodes": 44699
+      },
+      {
+        "run": 2,
+        "workload": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "sampling_interval": 32768,
+        "self_size_sum": 923764072,
+        "sample_size_sum": 924320744,
+        "samples": 28147,
+        "nodes": 45504
+      },
+      {
+        "run": 3,
+        "workload": {
+          "mode": "utf8",
+          "iterations": 10,
+          "checksum": 32412660080,
+          "bytes_consumed": 146240
+        },
+        "sampling_interval": 32768,
+        "self_size_sum": 936661272,
+        "sample_size_sum": 937166736,
+        "samples": 28538,
+        "nodes": 45697
+      }
+    ],
+    "median_estimated_v8_heap_bytes": 923848584,
+    "range_estimated_v8_heap_bytes": [
+      923764072,
+      936661272
+    ],
+    "trace_gc_median_bytes": 936004856,
+    "trace_gc_empty_control_underflow": 18446744073709551480,
+    "method": "HeapProfiler.startSampling interval32768, includeObjectsCollectedByMinorGC=true and includeObjectsCollectedByMajorGC=true, GC before start and before stop. Sum all node selfSize. No trace-gc simultaneously. External Buffer backing stores excluded.",
+    "notes": [
+      "Sampling estimates cumulative allocated V8 heap objects including objects collected during workload, not retained heap.",
+      "Individual profile.samples size sums differ slightly due per-sample versus aggregated statistical rounding; node selfSize sum is used consistently.",
+      "Trace-gc empty control produced size_t wraparound 2^64-136. This confirms trace allocated is not a strict monotone total-allocation counter. No absurd entries observed in the 9 non-empty workload traces per root audit.",
+      "First sampled run completed with expected observed checksum32412660080; an incorrectly typed harness assertion then failed before report write. Its full profile and result are retained as run1, not discarded."
+    ],
+    "sampling_vs_trace_fraction": -0.01298740270638088
+  },
+  "correctness": [
+    {
+      "label": "fixture",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 14624,
+      "sha256": "c8f7710cf563c22508c32ced1e9bbd15a12f3ea547e88bee2410cd5dfbb3395e",
+      "consumption": {
+        "bytes": 14624,
+        "units": 14624,
+        "utf16_hash": 3241266008,
+        "utf8_hash": 3241266008
+      },
+      "identical": true
+    },
+    {
+      "label": "src_Tidy_Hang.purs",
+      "backends": [
+        "Go"
+      ],
+      "bytes": 11207,
+      "sha256": "9b29e35b96fdd5fc46462b15e2d6ad3c1b594b6f495703a1076fac9d46bec251",
+      "consumption": {
+        "bytes": 11207,
+        "units": 11207,
+        "utf16_hash": 536176947,
+        "utf8_hash": 536176947
+      },
+      "identical": true
+    },
+    {
+      "label": "src_Tidy_Operators_Defaults.purs",
+      "backends": [
+        "Go"
+      ],
+      "bytes": 11823,
+      "sha256": "d25e808521fdf2a56ba81bfd58d61c6023cdab223aa80a70249902619521efe3",
+      "consumption": {
+        "bytes": 11823,
+        "units": 11819,
+        "utf16_hash": 1516445971,
+        "utf8_hash": 283428819
+      },
+      "identical": true
+    },
+    {
+      "label": "src_Tidy_Operators.purs",
+      "backends": [
+        "Go"
+      ],
+      "bytes": 3408,
+      "sha256": "b4c68ede229408ec072e7bc60399982f52658f8586690c5be5d189e154cf3826",
+      "consumption": {
+        "bytes": 3408,
+        "units": 3408,
+        "utf16_hash": 84051493,
+        "utf8_hash": 84051493
+      },
+      "identical": true
+    },
+    {
+      "label": "src_Tidy_Precedence.purs",
+      "backends": [
+        "Go"
+      ],
+      "bytes": 7532,
+      "sha256": "a61e082840390e8da4ba951d467a1e26c26523f3ab3b8287c044c2874dfc9da0",
+      "consumption": {
+        "bytes": 7532,
+        "units": 7532,
+        "utf16_hash": 3287500870,
+        "utf8_hash": 3287500870
+      },
+      "identical": true
+    },
+    {
+      "label": "src_Tidy_Printer.purs",
+      "backends": [
+        "Go"
+      ],
+      "bytes": 833,
+      "sha256": "dbf560ef2cec3f94306a5d8dfd11ff5cb1a6d7a05ec508cc48887d38ef431539",
+      "consumption": {
+        "bytes": 833,
+        "units": 833,
+        "utf16_hash": 2955198500,
+        "utf8_hash": 2955198500
+      },
+      "identical": true
+    },
+    {
+      "label": "src_Tidy_Token.purs",
+      "backends": [
+        "Go"
+      ],
+      "bytes": 2151,
+      "sha256": "6fa46546c0cf5f1f8d2355aab6d36161bf806acfd77e5c331bab9e5a04095213",
+      "consumption": {
+        "bytes": 2151,
+        "units": 2139,
+        "utf16_hash": 432655858,
+        "utf8_hash": 2334676609
+      },
+      "identical": true
+    },
+    {
+      "label": "src_Tidy_Util.purs",
+      "backends": [
+        "Go"
+      ],
+      "bytes": 629,
+      "sha256": "a4c625430350da878590d20294e2c2eb7d8581e6ebd5bca092787ea12c9758a2",
+      "consumption": {
+        "bytes": 629,
+        "units": 629,
+        "utf16_hash": 1245053616,
+        "utf8_hash": 1245053616
+      },
+      "identical": true
+    },
+    {
+      "label": "src_Tidy.purs",
+      "backends": [
+        "Go"
+      ],
+      "bytes": 52909,
+      "sha256": "55bfcdfdba95c1e5ea8e2b03f8a16042170562c53b2c5b15f3b438cbe9df9b02",
+      "consumption": {
+        "bytes": 52909,
+        "units": 52905,
+        "utf16_hash": 922194474,
+        "utf8_hash": 1106058542
+      },
+      "identical": true
+    },
+    {
+      "label": "crlf",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 46,
+      "sha256": "d41a6d39293c0d0c7905b8904a1b45285f20a444b1e898633035f911522999c5",
+      "consumption": {
+        "bytes": 46,
+        "units": 46,
+        "utf16_hash": 2968066604,
+        "utf8_hash": 2968066604
+      },
+      "identical": true
+    },
+    {
+      "label": "invalid-header",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "consumption": {
+        "bytes": 0,
+        "units": 0,
+        "utf16_hash": 2166136261,
+        "utf8_hash": 2166136261
+      },
+      "identical": true
+    },
+    {
+      "label": "layout-ado",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 67,
+      "sha256": "6bd0820ad47ba743351a9cc2e9da73c144f00aea961f3b57a8ddccb189e3f05c",
+      "consumption": {
+        "bytes": 67,
+        "units": 67,
+        "utf16_hash": 4003823910,
+        "utf8_hash": 4003823910
+      },
+      "identical": true
+    },
+    {
+      "label": "layout-case-guards",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 67,
+      "sha256": "2f76bc00d6f1c9426e95273ffac6585d23a95e5fd6d9ac6785674f2eb02db2f9",
+      "consumption": {
+        "bytes": 67,
+        "units": 67,
+        "utf16_hash": 616079014,
+        "utf8_hash": 616079014
+      },
+      "identical": true
+    },
+    {
+      "label": "layout-comments",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 76,
+      "sha256": "c4e1bfa97eb58fe8ccf27a052837a9bf880545074fdbc8a8dd4b3a2a7fbf7702",
+      "consumption": {
+        "bytes": 76,
+        "units": 76,
+        "utf16_hash": 2111867811,
+        "utf8_hash": 2111867811
+      },
+      "identical": true
+    },
+    {
+      "label": "layout-do",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 64,
+      "sha256": "6652d2f8b1e004d69ed48e14b390449fff3080fde39790a39332c34b17f7cde8",
+      "consumption": {
+        "bytes": 64,
+        "units": 64,
+        "utf16_hash": 3895634337,
+        "utf8_hash": 3895634337
+      },
+      "identical": true
+    },
+    {
+      "label": "layout-inline-let",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 43,
+      "sha256": "9ec2015f3e85ab79e29dcd4c76dae20e3a8d4a7e06ed13b6185d79446a8591ec",
+      "consumption": {
+        "bytes": 43,
+        "units": 43,
+        "utf16_hash": 1336500229,
+        "utf8_hash": 1336500229
+      },
+      "identical": true
+    },
+    {
+      "label": "layout-keyword-fields",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 62,
+      "sha256": "f89d6c9fa711ef4ec7912c06669d442fb4237b79b011133e6819c877261fd03e",
+      "consumption": {
+        "bytes": 62,
+        "units": 62,
+        "utf16_hash": 3373619994,
+        "utf8_hash": 3373619994
+      },
+      "identical": true
+    },
+    {
+      "label": "layout-let",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 63,
+      "sha256": "99b45fe6f8de0bdc06374fe6271e00e7dbf6a45587b71bc0a4d1eeec6a350b08",
+      "consumption": {
+        "bytes": 63,
+        "units": 63,
+        "utf16_hash": 1544724033,
+        "utf8_hash": 1544724033
+      },
+      "identical": true
+    },
+    {
+      "label": "layout-where",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 44,
+      "sha256": "13d449055867e9d39b9fd08775a7f2eb9bafe8aa62f6068ae62ba104e3fb961d",
+      "consumption": {
+        "bytes": 44,
+        "units": 44,
+        "utf16_hash": 2775021921,
+        "utf8_hash": 2775021921
+      },
+      "identical": true
+    },
+    {
+      "label": "missing-expression",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "consumption": {
+        "bytes": 0,
+        "units": 0,
+        "utf16_hash": 2166136261,
+        "utf8_hash": 2166136261
+      },
+      "identical": true
+    },
+    {
+      "label": "missing-let-body",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "consumption": {
+        "bytes": 0,
+        "units": 0,
+        "utf16_hash": 2166136261,
+        "utf8_hash": 2166136261
+      },
+      "identical": true
+    },
+    {
+      "label": "multiple-errors",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "consumption": {
+        "bytes": 0,
+        "units": 0,
+        "utf16_hash": 2166136261,
+        "utf8_hash": 2166136261
+      },
+      "identical": true
+    },
+    {
+      "label": "unclosed-array",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "consumption": {
+        "bytes": 0,
+        "units": 0,
+        "utf16_hash": 2166136261,
+        "utf8_hash": 2166136261
+      },
+      "identical": true
+    },
+    {
+      "label": "unclosed-string",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "consumption": {
+        "bytes": 0,
+        "units": 0,
+        "utf16_hash": 2166136261,
+        "utf8_hash": 2166136261
+      },
+      "identical": true
+    },
+    {
+      "label": "unicode-comments",
+      "backends": [
+        "Go",
+        "JS"
+      ],
+      "bytes": 51,
+      "sha256": "891feb4d216ca1200827158e2ae00c350aa1bc89cfc2c9f72bee81930d33a7d5",
+      "consumption": {
+        "bytes": 51,
+        "units": 46,
+        "utf16_hash": 1961846060,
+        "utf8_hash": 191509793
+      },
+      "identical": true
+    }
+  ],
+  "historical_context": {
+    "initial_Tidy_ratio_to_JS": 2.68,
+    "prior_integrated_runtime_seconds": {
+      "Go": 0.5592109585,
+      "JS": 0.3767277085
+    },
+    "prior_integrated_ratio": 1.484390306,
+    "note": "New driver and current measurement campaign; compare modes within this campaign, not small changes across campaigns.",
+    "official_altbak_reference": "../altbak.pub/README.md",
+    "official_altbak_stable_ms": {
+      "Go": 10.25,
+      "JS": 129.1
+    },
+    "altbak_scope": "Different workload, not a formatter parity result; its tables were not modified."
+  },
+  "conclusions": {
+    "runtime": "Full consumption does not remove the measured runtime gap. Do not interpret the small change of ratio as a demonstrated ropes effect: paired intervals overlap zero and JS process durations are dispersed.",
+    "allocations": "About 0.93 GB estimated V8 heap allocation versus 0.94 GB Go TotalAlloc per ten iterations; comparable order of magnitude, not a precise cross-runtime ranking.",
+    "correctness": "Go matches prior outputs on 9 source files; Go/JS bytes, UTF16 hashes and UTF8 hashes match on the main fixture plus 16 extra cases. Six malformed cases compare empty formatter results, not diagnostics."
+  },
+  "gopurs_unchanged": true,
+  "JS_frontend_provenance": "Typed PureScript fork 0.15.16, identified from generated module headers. This historical reference is not the official PureScript 0.15.15 used by the current application table."
+}

@@ -18,10 +18,12 @@ import Effect.Class (liftEffect)
 import Effect.Class.Console as Console
 import Effect.Exception as Error
 import Node.Process as Process
+import Test.Printer as Printer
 import Test.Snapshot (SnapshotResult(..), SnapshotResultGroup(..), snapshotFormat)
 
 main :: Effect Unit
 main = do
+  Printer.main
   args <- Process.argv
   let accept = any (eq "--accept" || eq "-a") args
   let printOutput = any (eq "--print-output" || eq "-p") args

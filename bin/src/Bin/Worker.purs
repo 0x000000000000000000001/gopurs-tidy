@@ -30,6 +30,7 @@ import PureScript.CST.Parser.Monad (PositionedError)
 import Tidy (defaultFormatOptions, formatModule, toDoc)
 import Tidy.Operators (parseOperatorTable)
 import Tidy.Precedence (PrecedenceMap, remapOperators)
+import Tidy.Printer as Printer
 
 type WorkerConfig =
   { importSort :: String
@@ -74,7 +75,7 @@ type WorkerOutput =
 formatCommand :: FormatOptions -> PrecedenceMap -> String -> Either String String
 formatCommand args operators contents = do
   let
-    print = Dodo.print Dodo.plainText
+    print = Dodo.print Printer.plainText
       { pageWidth: fromMaybe top args.width
       , ribbonRatio: args.ribbon
       , indentWidth: args.indent

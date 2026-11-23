@@ -44,6 +44,7 @@ import Tidy as Tidy
 import Tidy.Operators (parseOperatorTable)
 import Tidy.Operators.Defaults (defaultOperators)
 import Tidy.Precedence (PrecedenceMap)
+import Tidy.Printer as Printer
 
 data SnapshotResult
   = Passed
@@ -241,7 +242,7 @@ snapshotFormat accept mbPattern = do
           makeErrorResult name (error "Mismatched format options in output file.")
 
   formatModule :: forall e a. PrintOptions -> FormatOptions e a -> Module e -> String
-  formatModule opts conf = Dodo.print Dodo.plainText opts <<< Tidy.toDoc <<< Tidy.formatModule (conf { operators = operators })
+  formatModule opts conf = Dodo.print Printer.plainText opts <<< Tidy.toDoc <<< Tidy.formatModule (conf { operators = operators })
 
   operators :: PrecedenceMap
   operators = parseOperatorTable defaultOperators
